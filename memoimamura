@@ -1,0 +1,477 @@
+     <!-- resources/views/index.blade.php	-->
+@extends('layouts.app')
+@section('content')
+<!-- Bootstrap の定形コード… -->
+<style>
+      .ss {
+        font-weight: bold;
+      }
+     .place {
+      cursor: pointer;
+     }
+      a {
+    text-decoration:none; 
+      }
+}
+      
+  /*瑞樹Css書いている部分----*/
+.beige{
+  background-color: beige; 
+}
+.note_wrap{
+  background: #fff;
+  padding: 1em 2em;
+  width: 60%;
+  margin: 30px auto;
+  margin-top:200px;
+  box-shadow: 5px 5px 20px 5px rgba(0,0,0,0.7);
+}
+.note{
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,0) 0%,
+      rgba(0,0,0,0) 97%,
+      #ddd 97%,
+      #ddd 100%
+    );
+  background-size:100% 2em;
+  line-height:2;
+}
+.note p{
+  margin-bottom:2em;
+}
+
+.btn-stitch {
+  display: inline-block;
+  padding: 0.5em 1em;
+  text-decoration: none;
+  background: #668ad8;
+  color: #FFF;
+  border-radius: 4px;
+  box-shadow: 0px 0px 0px 5px #668ad8;
+  border: dashed 1px #FFF;
+}
+
+.btn-stitch:hover {
+  border: dotted 1px #FFF;
+}
+
+.btn-stitch2 {
+  cursor: pointer;
+  display: inline-block;
+  padding: 0.5em 1em;
+  text-decoration: none;
+  background:#E07530;
+  color: #FFF;
+  border-radius: 4px;
+  box-shadow: 0px 0px 0px 5px  #E07530;
+  border: dashed 1px #FFF;
+}
+
+.btn-stitch2:hover {
+  border: dotted 1px #FFF;
+}
+
+
+<!--瑞樹ここまで-->
+
+<!--今村CSS分-->
+
+
+
+<!--今村CSSここまで-->
+      
+      
+</style>
+
+  <!-- バリデーションエラーの表示に使用-->
+  @include('common.errors')
+  <!-- バリデーションエラーの表示に使用-->
+
+
+  
+  <!--DOM操作時にしようするdivタグ-->
+<div id="main">
+  
+  
+<div class="panel-body">
+  
+  <!--ランダムでタグが表示される-->
+  @foreach ($tags as $tag)
+    <div><a style="text-decoration:none;" href={{ url('/tag/'.$tag->id) }} >#{{ $tag->tag_name}}</a></div>
+  @endforeach
+  <!--タグ表示-->
+  
+  
+  <div id ="fa"></div>
+  <div>投稿する</div>
+  <button><a href="{{ url('/edit') }}" style="text-decoration:none;">+</a></button>
+  
+  <!--近くになったら手紙を入れるDIVタグ-->
+  <div id ="target" class="beige"></div>
+
+  <!--地図が入る-->
+  <div id="mapDiv" style="height:500px"></div>
+  <!--地図の中に画像を表示させるのに必要-->
+  <img id="getImg" src="" hidden> 
+  <!--近くの手紙が入る-->
+  <canvas id="cap" width="300" height="60" style="display:none;"></canvas>
+  
+
+  <!-- 現在の投稿 -->
+  <!-- web.phpの/selectで飛んできたpastelsが入る -->
+  @if (count($pastels) > 0)
+  <div class="panel panel-default">
+    <div class="panel-heading">
+
+    </div>
+  </div>
+  <div class="panel-body">
+    <table class="table table-striped task-table">
+      <!-- テーブルヘッダ -->
+      <div>投稿一覧</div>
+      <thead>
+        <th>写真</th>
+        <th>名前</th>
+        <th>タイトル<br>内容</th>
+        <th>日時</th>
+        <th>場所</th>
+        <th>tags</th>
+      </thead>
+      <!-- テーブル本体 -->
+      <tbody>
+        {{-- @foreachで回して$pastels から＄pastelに値をそれぞれ入れる--}}
+        @foreach ($pastels as $pastel)
+          <tr>
+            <!-- 本タイトル -->
+            <td>
+              <img src="{{ asset('/uploads/'.$pastel->pic_name) }}" alt="" style="width: 100px; height: 100px;">
+            </td>
+            <td class="table-text">
+              <!-- $pastelの内容を表示 -->
+              <div>ID:{{ $pastel->id}}</div>
+              <div>u_name:{{ $pastel->u_name }}</div>
+            </td>
+            <td>
+              <div><a style="text-decoration:none;" href={{ url('/detail/'.$pastel->id) }}>title:{{ $pastel->title }}</a></div>
+              <div>message:{{ $pastel->message }}</div>
+            </td>
+            <td>
+              <div>日時:{{ $pastel->open_time}}</div>
+              <div>公開設定:{{ $pastel->public}}</div>
+            </td>
+            <td>
+              <div >
+                <a onclick="eventPanto({{ $pastel }})" class="place" style="text-decoration:none;">
+              場所:{{ $pastel->open_place_name }}
+              </a>
+              </div>
+            </td>
+            <td>
+              <!--タグを表示させるループ処理-->
+              @foreach ($pastel->tags as $tag) 　　　
+              <div><a href={{ url('/tag/'.$tag->id) }}>#{{$tag->tag_name}}</a></div>
+              @endforeach
+            </td>
+          </tr>
+        @endforeach
+      </tbody>
+    </table>
+  </div>
+</div>
+@endif
+
+</div>
+<!--ページネーション部分-->
+<div class="row">
+<div class="col-md-4 offset-md-4">
+{{ $pastels->links('vendor.pagination.default')}}
+</div>
+</div>
+<!--ここまで-->
+</div>
+
+
+<!--jsにでーたおくるためのものです消さないでください！-->
+<div style="display:none;">{{$keynum = Auth::user()->id}}</div>
+
+<!--下記スクリプトタグはｊｓに必要なデータを送る処理-->
+<script>
+let toukou = @json($allpastels);
+let keynum= {{$keynum}};
+let mypastels = @json($mypastels);
+</script>
+
+<script src="{{ asset('/js/result.js') }}"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAj-SiIlxd4UX4R5esdvy9D_hPwuzsMxuc&callback=initMap&libraries=geometry">
+    </script>
+
+
+@endsection
+
+
+
+
+
+
+
+
+
+<tbody>
+        {{-- @foreachで回して$pastels から＄pastelに値をそれぞれ入れる--}}
+        @foreach ($pastels as $pastel)
+          <tr>
+            <!-- 本タイトル -->
+            <td>
+              <img src="{{ asset('/uploads/'.$pastel->pic_name) }}" alt="" style="width: 100px; height: 100px;">
+            </td>
+            <td class="table-text">
+              <!-- $pastelの内容を表示 -->
+              <div>ID:{{ $pastel->id}}</div>
+              <div>u_name:{{ $pastel->u_name }}</div>
+            </td>
+            <td>
+              <div><a style="text-decoration:none;" href={{ url('/detail/'.$pastel->id) }}>title:{{ $pastel->title }}</a></div>
+              <div>message:{{ $pastel->message }}</div>
+            </td>
+            <td>
+              <div>日時:{{ $pastel->open_time}}</div>
+              <div>公開設定:{{ $pastel->public}}</div>
+            </td>
+            <td>
+              <div >
+                <a onclick="eventPanto({{ $pastel }})" class="place" style="text-decoration:none;">
+              場所:{{ $pastel->open_place_name }}
+              </a>
+              </div>
+            </td>
+            <td>
+              <!--タグを表示させるループ処理-->
+              @foreach ($pastel->tags as $tag) 　　　
+              <div><a href={{ url('/tag/'.$tag->id) }}>#{{$tag->tag_name}}</a></div>
+              @endforeach
+            </td>
+          </tr>
+        @endforeach
+      </tbody>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      6/28　2132最新
+          <!-- resources/views/index.blade.php	-->
+@extends('layouts.app')
+@section('content')
+<!-- Bootstrap の定形コード… -->
+<style>
+      .ss {
+        font-weight: bold;
+      }
+     .place {
+      cursor: pointer;
+     }
+      a {
+    text-decoration:none; 
+      }
+}
+      
+  /*瑞樹Css書いている部分----*/
+.beige{
+  background-color: beige; 
+}
+.note_wrap{
+  background: #fff;
+  padding: 1em 2em;
+  width: 60%;
+  margin: 30px auto;
+  margin-top:200px;
+  box-shadow: 5px 5px 20px 5px rgba(0,0,0,0.7);
+}
+.note{
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,0) 0%,
+      rgba(0,0,0,0) 97%,
+      #ddd 97%,
+      #ddd 100%
+    );
+  background-size:100% 2em;
+  line-height:2;
+}
+.note p{
+  margin-bottom:2em;
+}
+
+.btn-stitch {
+  display: inline-block;
+  padding: 0.5em 1em;
+  text-decoration: none;
+  background: #668ad8;
+  color: #FFF;
+  border-radius: 4px;
+  box-shadow: 0px 0px 0px 5px #668ad8;
+  border: dashed 1px #FFF;
+}
+
+.btn-stitch:hover {
+  border: dotted 1px #FFF;
+}
+
+.btn-stitch2 {
+  cursor: pointer;
+  display: inline-block;
+  padding: 0.5em 1em;
+  text-decoration: none;
+  background:#E07530;
+  color: #FFF;
+  border-radius: 4px;
+  box-shadow: 0px 0px 0px 5px  #E07530;
+  border: dashed 1px #FFF;
+}
+
+.btn-stitch2:hover {
+  border: dotted 1px #FFF;
+}
+
+
+<!--瑞樹ここまで-->
+
+<!--今村CSS分--。>
+.tagzone{
+
+}
+
+
+
+.post-flexbox {
+    padding:  10px;
+    display: flex; 
+    flex-wrap: wrap; 
+    text-align:center;
+}
+ 
+.box-eachpost {
+    padding: 10px;
+    margin:  10px;             
+    width: 30%;
+    border: 1px solid
+}
+
+<!--今村CSSここまで-->
+      
+      
+</style>
+
+  <!-- バリデーションエラーの表示に使用-->
+  @include('common.errors')
+  <!-- バリデーションエラーの表示に使用-->
+
+
+  
+  <!--DOM操作時にしようするdivタグ-->
+<div id="main">
+  
+  
+<div class="panel-body">
+  
+  <!--タグ表示-->
+  <!--ランダムでタグが表示される-->
+  <div class="tagzone">
+  @foreach ($tags as $tag)
+    <div><a style="text-decoration:none;" href={{ url('/tag/'.$tag->id) }} >#{{ $tag->tag_name}}</a></div>
+  @endforeach
+  </div>
+  
+  
+  <div id ="fa"></div>
+  <div>投稿する</div>
+  <button><a href="{{ url('/edit') }}" style="text-decoration:none;">+</a></button>
+  
+  <!--近くになったら手紙を入れるDIVタグ-->
+  <div id ="target" class="beige"></div>
+
+  <!--地図が入る-->
+  <div id="mapDiv" style="height:500px"></div>
+  <!--地図の中に画像を表示させるのに必要-->
+  <img id="getImg" src="" hidden> 
+  <!--近くの手紙が入る-->
+  <canvas id="cap" width="300" height="60" style="display:none;"></canvas>
+  
+
+  <!-- 現在の投稿 -->
+  <!-- web.phpの/selectで飛んできたpastelsが入る -->
+  @if (count($pastels) > 0)
+  <div class="panel panel-default">
+    <div class="panel-heading">
+
+    </div>
+  </div>
+  <div class="panel-body">
+    <table class="table table-striped task-table">
+      <!-- 投稿ヘッダ -->
+      <div>投稿一覧</div>
+      <!-- テーブル本体 -->
+      <div class="post-flexbox">
+        {{-- @foreachで回して$pastels から＄pastelに値をそれぞれ入れる--}}
+        @foreach ($pastels as $pastel)
+          <div class="box-eachpost">
+            <!-- 本タイトル -->
+              <img src="{{ asset('/uploads/'.$pastel->pic_name) }}" alt="" style="width: 150px; height: 100px;">
+            <!--<div class="table-text">-->
+              <!-- $pastelの内容を表示 -->
+              <div>u_name:{{ $pastel->u_name }}</div>
+            
+              <div><a style="text-decoration:none;" href={{ url('/detail/'.$pastel->id) }}>title:{{ $pastel->title }}</a></div>
+
+            
+              <div>開封日時:{{ $pastel->open_time}}</div>
+                <a onclick="eventPanto({{ $pastel }})" class="place" style="text-decoration:none;">
+              場所:{{ $pastel->open_place_name }}
+              </a>
+              
+              <!--タグを表示させるループ処理-->
+              @foreach ($pastel->tags as $tag) 　　　
+              <div><a href={{ url('/tag/'.$tag->id) }}>#{{$tag->tag_name}}</a></div>
+              @endforeach
+          </div>
+        @endforeach
+      </div>
+    <!--</table>-->
+  </div>
+</div>
+@endif
+<!--ページネーション部分-->
+<div class="row">
+<div class="col-md-4 offset-md-4">
+{{ $pastels->links('vendor.pagination.default')}}
+</div>
+</div>
+<!--ここまで-->
+
+</div>
+</div>
+
+
+<!--jsにでーたおくるためのものです消さないでください！-->
+<div style="display:none;">{{$keynum = Auth::user()->id}}</div>
+
+<!--下記スクリプトタグはｊｓに必要なデータを送る処理-->
+<script>
+let toukou = @json($allpastels);
+let keynum= {{$keynum}};
+let mypastels = @json($mypastels);
+</script>
+
+<script src="{{ asset('/js/result.js') }}"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAj-SiIlxd4UX4R5esdvy9D_hPwuzsMxuc&callback=initMap&libraries=geometry">
+    </script>
+
+
+@endsection

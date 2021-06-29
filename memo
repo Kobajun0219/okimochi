@@ -1,0 +1,538 @@
+
+console.log(toukou);
+
+console.log(toukou[2].title);
+// console.log(toukou[2].lat);
+
+var mapDiv = document.getElementById("mapDiv");     // 地図を置く場所
+var gmap;  　                                       // Googleマップの Map オブジェクトのための変数
+var mark;                                           // Googleマップの Marker オブジェクトのための変数
+
+// var toukou = [];                                  // ★投稿の情報を入れる変数
+var captured = [];                                  // ★投稿を取得済みか否かを入れる変数
+                               // ★投稿の情報を読み込む（緯度軽度）
+var getImg = document.getElementById("getImg");     // ★img要素の取得
+var canvas = document.getElementById("cap");        // ★取得済投稿を入れるcanvas要素の取得
+var context = canvas.getContext("2d");              // ★contextの取得
+context.fillStyle = "rgb(153, 217, 234)";           // ★塗りつぶす色をターコイズにする
+context.fillRect(0, 0, 300, 60);                    // ★canvasを塗りつぶす
+
+// GPS センサの値が変化したら何らか実行する geolocation.watchPosition メソッド
+navigator.geolocation.watchPosition((position) => {
+    var lat = position.coords.latitude;            // 緯度を取得
+    var lng = position.coords.longitude;           // 経度を取得
+    var accu = position.coords.accuracy;            // 緯度・経度の精度を取得
+    showMyPos(lat, lng);                            // showMyPos 関数を実行
+    calcDistance(lat, lng);
+});
+
+// 自分の位置を表示する showMyPos 関数
+function showMyPos(lat, lng) {
+    var myPos = new google.maps.LatLng(lat, lng);   // Googleマップの LatLng オブジェクトを作成
+    gmap.setCenter(myPos);                          // gmap の中心を myPos の位置にする
+    mark.setPosition(myPos);                        // mark の位置を myPos にする
+}
+
+// 地図の初期化
+function initMap() {
+    // 1回だけ現在位置を測定する getCurrentPosition メソッド
+    navigator.geolocation.getCurrentPosition((position) => {
+        var lat = position.coords.latitude;         // 緯度を取得
+        var lng = position.coords.longitude;        // 経度を取得
+        var initPos = new google.maps.LatLng(lat, lng); // 初期位置を指定
+        gmap = new google.maps.Map(mapDiv, {        // Map オブジェクトを作成して mapDiv に表示
+            center: initPos,                        // 地図の中心を initPos に設定
+            zoom: 16                                // ズーム倍率
+        });
+        mark = new google.maps.Marker({             // Marker オブジェクトを作成
+            map: gmap,                              // gmap の上に表示する
+            position: initPos,                      // initPos の位置に
+        });
+        placeMermaids();                            // ★投稿を配置する
+    }, (error) => {                                 // エラー処理（今回は特に何もしない）
+    }, {
+        enableHighAccuracy: true                    // 高精度で測定するオプション
+    });
+}
+
+
+
+// ★投稿を地図上に配置する placeMermaids 関数
+function placeMermaids() {
+    var toukouMark = [];                           // 投稿マーカーの配列
+    for (var i = 0; i < toukou.length; i++) {      // 全ての投稿について
+        var pos = new google.maps.LatLng(toukou[i].open_place_latitude, toukou[i].open_place_longitude); // 投稿の位置を設定
+        console.log(toukou[i].open_place_latitude);
+        console.log(toukou[i].open_place_longitude);
+        var img = {                                 // 画像の設定
+            url: "https://6961cd4e5b314aac9ea4e5cc66f5207e.vfs.cloud9.us-east-2.amazonaws.com/image/0.png",        
+            scaledSize: new google.maps.Size(60, 60)    // 画像を縮小表示
+        };
+        toukouMark[i] = new google.maps.Marker({   // 投稿のマーカーを作成
+            map: gmap,                              // gmap の上に表示する
+            position: pos,                          // pos の位置に
+            icon: img,                              // アイコンを設定
+            title: toukou[i].open_place_name                 // タイトルを設定
+        });
+        captured[i] = false;                        // 取得済み状態を全てfalseにする
+    }
+}
+
+// ★自分と投稿との距離を計算する calcDistance 関数
+function calcDistance(open_place_latitude, open_place_longitude) {
+    let count = 0;
+    var distance = [];                              // 距離を入れる配列
+    var myPos = new google.maps.LatLng(open_place_latitude, open_place_longitude);   // Googleマップの LatLng オブジェクトを作成
+    for (var i = 0; i < toukou.length; i++) {      // 全ての投稿について
+        var pos = new google.maps.LatLng(toukou[i].open_place_latitude, toukou[i].open_place_longitude);                 // 投稿の位置を設定
+        distance[i] = google.maps.geometry.spherical.computeDistanceBetween(myPos, pos);    // 距離を求める
+        // 取得の判定と取得した時のエフェクト
+        if (distance[i] < 50 && captured[i] === false) {  // 距離が20m未満、かつ、まだ取得していないなら
+            count++;
+            
+        
+        // for (let i = 0; i < count; i++) {
+            captured[i] = true;                                 // 取得済にする
+            getImg.src = "https://6961cd4e5b314aac9ea4e5cc66f5207e.vfs.cloud9.us-east-2.amazonaws.com/image/0.png";                      // 取得した投稿の画像を設定
+            context.drawImage(getImg, i * 60, 0, 60, 60);       // 取得済の枠に投稿の画像を表示
+            getImg.hidden = false;                              // img要素を表示
+            // mapDiv.hidden = true;     
+        // }
+           
+            
+            
+            // 地図を非表示
+            getImg.addEventListener("click", () => {   
+                console.log(getImg);// img要素がクリックされたら
+                console.log(count);
+            console.log("hello2");
+                // getImg.hidden = true;                           // img要素を非表示
+                // mapDiv.hidden = false;                          // 地図を表示
+            });
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------------------------------
+
+
+ for (var i = 0; i < toukou.length; i++) {      // 全ての投稿について
+        var pos = new google.maps.LatLng(toukou[i].open_place_latitude, toukou[i].open_place_longitude);                 // 投稿の位置を設定
+        distance[i] = google.maps.geometry.spherical.computeDistanceBetween(myPos, pos);    // 距離を求める
+        // 取得の判定と取得した時のエフェクト
+        if (distance[i] < 50 && captured[i] === false) {  // 距離が20m未満、かつ、まだ取得していないなら
+            count++;
+            
+        // console.log('個々通っているよ')；
+        for (let i = 0; i < count; i++) {
+            // console.log(i);
+            let imgDiv = document.createElement('img');
+            console.log(imgDiv);
+            imgDiv.width = 60;
+            imgDiv.height = 60;
+            imgDiv.setAttribute("id",count);
+            console.log(document.getElementById('target'));
+            imgDiv.src = "https://6961cd4e5b314aac9ea4e5cc66f5207e.vfs.cloud9.us-east-2.amazonaws.com/image/0.png";
+            document.getElementById('target').append(imgDiv);
+            captured[i] = true;                                 // 取得済にする
+            // getImg.src = "https://6961cd4e5b314aac9ea4e5cc66f5207e.vfs.cloud9.us-east-2.amazonaws.com/image/0.png";                      // 取得した投稿の画像を設定
+            // context.drawImage(imgDiv, i * 60, 0, 60, 60);     // 取得済の枠に投稿の画像を表示
+            // getImg.hidden = false;                              // img要素を表示
+            // mapDiv.hidden = true;     
+        }
+           
+            console.log(count);
+            
+            // 地図を非表示
+            addEvent(count);
+            
+            getImg.addEventListener("click", () => {   
+                
+            console.log("hello2");
+                // getImg.hidden = true;                           // img要素を非表示
+                // mapDiv.hidden = false;                          // 地図を表示
+            });
+        }
+    }
+}
+
+
+
+
+-----------------------------------------------------
+
+
+
+
+<!-- resources/views/sbds.blade.php	-->
+@extends('layouts.app')
+@section('content')
+<!-- Bootstrap の定形コード… -->
+  <style>
+    
+    body{
+  background-color: beige; 
+}
+.note_wrap{
+  background: #fff;
+  padding: 1em 2em;
+  width: 60%;
+  margin: 30px auto;
+  margin-top:200px;
+  box-shadow: 5px 5px 20px 5px rgba(0,0,0,0.7);
+}
+.note{
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,0) 0%,
+      rgba(0,0,0,0) 97%,
+      #ddd 97%,
+      #ddd 100%
+    );
+  background-size:100% 2em;
+  line-height:2;
+}
+.note p{
+  margin-bottom:2em;
+  
+}
+
+
+
+.btn-stitch2 {
+  display: inline-block;
+  padding: 0.5em 1em;
+  text-decoration: none;
+  background:#E07530;
+  color: #FFF;
+  border-radius: 4px;
+  box-shadow: 0px 0px 0px 5px  #E07530;
+  border: dashed 1px #FFF;
+}
+
+.btn-stitch2:hover {
+  border: dotted 1px #FFF;
+}
+
+
+  </style>
+<!--<div class="panel-body">-->
+
+  <!-- バリデーションエラーの表示に使用-->
+  @include('common.errors')
+  <!-- バリデーションエラーの表示に使用-->
+<div class="note_wrap">
+    <div class="note">
+      <h5>{{$pastels->who}} へ</h5>
+      <h5>題名　「{{$pastels->title}}」</h5>
+      <p>{{ $pastels->message }}</p>
+      <h5 align="right">{{ $pastels->u_name }}より</h5>
+    </div>
+     <div style="text-align: center; margin-top: 50px;">
+    <img src="{{ asset('/uploads/'.$pastels->pic_name) }}" alt="" style="width: 200px; height: 200px;">
+    </div>
+  </div>
+  
+  <div class="d-flex align-items-center justify-content-center">
+    <a class="btn-stitch2 m-2" href="{{ url('user/') }}";>戻る</a>
+  </div>
+
+  <!-- 現在の投稿 -->
+  <!-- web.phpの/selectで飛んできたpastelsが入る -->
+ 
+
+@endsection
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- resources/views/sbds.blade.php	-->
+@extends('layouts.app')
+@section('content')
+<style>
+/* 白鳥が記述 */
+/*ページ全体のCSS適用*/
+.panel-body{
+    max-width: 1060px;
+    font-size:100%;
+    text-align: center;
+    line-height: 1.7;
+    font-family: 'Noto Sans JP','Roboto', sans-serif;
+    max-width: 1060px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+a{
+    text-decoration: none;
+}
+
+a:hover{
+    text-decoration: none;
+}
+
+img{
+    max-width: 100%;
+}
+
+iframe {
+    max-width: 100%;
+}
+
+li{
+    list-style:none
+}
+
+/*CSSの個別部分*/
+
+div#map-canvas {
+    /* text-align: center; */
+    margin: 0 auto;
+}
+
+.form-content {
+    padding: 10px 0 5px 0px;
+}
+
+label {
+    margin: 15px 0 5px 0;
+}
+
+input#who {
+    width: 100%;
+}
+
+input#title {
+    width: 100%;
+}
+
+textarea#message {
+    width: 30%;
+}
+
+.drag-drop-inside {
+    border: dashed 2px;
+    width: 30%;
+    margin: 0 auto;
+    /* text-align: center; */
+}
+
+input#fileInput {
+    width: 80%;
+}
+
+input#open_time {
+    width: 30%;
+}
+
+input#address {
+    width: 25%;
+}
+
+.form-content.public-form {
+    padding: 40px 0 0px 0;
+}
+
+textarea#tags {
+    width: 30%;
+}
+
+div#sub-button {
+    padding: 15px 0 15px 0;
+}
+
+//下記ドラックアンドドラップのｃｓｓを当ててます。-------
+
+  #dragDropArea{
+  background-color: #f4f4f4;
+  margin: 10px;
+  padding: 10px;
+  border: #ddd dashed 5px;
+  min-height: 200px;
+  text-align: center;
+}
+#dragDropArea p{
+    color: #999;
+    font-weight: bold;
+  
+}
+#dragDropArea .drag-drop-buttons{
+   
+}
+.drag-drop-buttons input{
+  
+}
+
+
+
+
+.letterdiv{
+display:flex;
+}
+
+
+</style>
+<!-- Bootstrap の定形コード… -->
+<div class="panel-body">
+
+  <!-- バリデーションエラーの表示に使用-->
+  @include('common.errors')
+  <!-- バリデーションエラーの表示に使用-->
+
+  <!--<div>投稿画面</div>-->
+  <!----------------------------------->
+
+  <form action="{{	url('index')	}}" method="POST" enctype="multipart/form-data">
+    <!-- なり代わり防止のヘルパー関数 -->
+    {{ csrf_field()	}}
+    
+   
+    <div>
+        
+<div>
+    
+
+    
+    <div class="form-content d-flex m-2">
+      <div class="m-1"><label for="who">手紙の宛先</label></div>
+      <div><input type="text" name="who" id="who" value="{{old('who')}}"></div>
+    </div>
+    
+
+    <div class="form-content d-flex m-2">
+      <div class="m-1"><label for="title">タイトル</label></div>
+      <div><input type="text" name="title" id="title" value="{{old('title')}}"></div>
+    </div>
+    
+    </div>
+    //ここまで
+    
+    //内容DIV
+    <div class="form-content">
+      <div><label for="message">内容</label></div>
+      <textarea name="message" id="message" cols="30" rows="10">{{old('message')}}</textarea>
+      <!--<input type="text" name="message" id="message" value="{{old('message')}}">-->
+    </div>
+    
+    
+     <!--開ける日DIV-->
+    <div class="form-content">
+      <div><label for="open_time">手紙の公開日</label></div>
+      <input type="datetime-local" name="open_time" id="open_time">
+    </div>
+    <!--ここまで-->
+    
+    <div>
+       //写真と場所DIV 
+
+
+
+    <div class="form-content">
+      <label for="file">添付する写真</label>
+    </div>
+    
+    
+    <!--下記ドラックアンドドラップ部分-->
+      <div id="dragDropArea">
+        <div class="drag-drop-inside">
+            <p class="drag-drop-info">ここにファイルをドロップ</p>
+            <p>もしくは「ファイルを選択」</p>
+            <p class="drag-drop-buttons">
+                <input id="fileInput" type="file"  value="ファイルを選択" name="pic_name" onChange="photoPreview(event)">
+            </p>
+            <div id="previewArea"></div>
+        </div>
+      </div>
+    <!--ここまで-->
+    
+    
+   
+    
+    
+  <!--場所-->
+    <div class="form-content">
+      <div><label for="open_place_name">置き手紙する場所</label></div>
+      <input type="text" name="open_place_name" id="address" value="{{old('open_place_name')}}">
+      <button type="button" value="検索" id="map_button">検索</button>
+    </div>
+    <!--ここまで-->
+    
+    
+    <!--マップ出す位置-->
+    <div class="map_box01">
+      <div id="map-canvas" style="width: 500px;height: 350px;"></div>
+    </div>
+    <!--ここまで-->
+    
+    
+    
+    </div>
+    //ここまで
+    
+    <div>
+        //タグと公開設定
+    
+　<!--タグ-->
+    <div class="form-content">
+      <div><label for="tags">Tag</label></div>
+      <textarea name="tags" id="tags" cols="10" placeholder="#ジーズアカデミー" rows="5">{{old('tags')}}</textarea>
+    </div>
+    <!--ここまで-->
+    
+    
+   <!--公開設定-->
+    <div class="form-content public-form">公開設定
+      <input type="radio" name="public" value="0" checked> はい
+      <input type="radio" name="public" value=1 > いいえ
+    </div>
+    <!--ここまで-->
+    
+    </div>
+    //タグと公開設定DIｖここまで
+    
+    
+    
+    <!-- hiddenで情報を送ってます -->
+    <input type="hidden" id="lat" value="" name="ido">
+    <input type="hidden" id="lng" value="" name="keido">
+    <!--ここまで-->
+    
+    <!--送信ボタン-->
+    <div id="sub-button"><button type="submit">置き手紙を投函する</button></div>
+  </form>
+  
+ 
+
+</div>
+
+</div>
+//一番大きなDIV
+
+    <script src="{{ asset('/js/edit.js') }}"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?language=ja&region=JP&key=AIzaSyAj-SiIlxd4UX4R5esdvy9D_hPwuzsMxuc">
+    </script>
+
+
+@endsection

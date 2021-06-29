@@ -1,0 +1,40 @@
+#MySQL起動（ログインしたら必ず実行）
+sudo service mysqld restart
+
+#Webサーバー起動（ログインしたら必ず実行）
+php artisan serve --port=8080
+
+#よく使うComposerコマンド
+cd　→移動
+ls　→中身の参照
+pwd　→パスの参照
+
+SQLのURL
+
+https://6961cd4e5b314aac9ea4e5cc66f5207e.vfs.cloud9.us-east-2.amazonaws.com/phpMyAdmin/index.php
+
+#ファイル命名規則や担当について
+https://docs.google.com/spreadsheets/d/1ZlYxPZtJ-3zHrRcp0y5Jfy43gUeca8iMsYTjqlx-8SY/edit#gid=0
+
+
+ <script src="https://maps.googleapis.com/maps/api/js?language=ja&region=JP&key=AIzaSyAj-SiIlxd4UX4R5esdvy9D_hPwuzsMxuc&callback=initMap" async defer>
+    </script>
+    
+    
+   検索機能
+ <form action="{{url('/search')}}" method="POST">
+    {{ csrf_field()	}}
+    <div><label for="search" class="ss">タグで検索</label></div>
+    <input type="text" id="search" name="search"><input type="submit" value="検索">
+  </form>
+  
+  
+
+   
+   //compact()でindexに渡してあげる
+  
+   return view('index', ['pastels' => $pastels,'mypastels' => $mypastels,'tags' => $tags ,'allpastels' => $allpastels]); 
+   
+   return view('detail', ['pastels' => $pastels]); //$pastelsですが、ひとつだけ入っている
+   
+   return view('/tag',['tags' =>  $tags]);
