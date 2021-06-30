@@ -9,7 +9,7 @@
 }
 
 .img_size{
-    width:100%;
+    width:50%;
     max-width: 100%;
     height: auto;
 }
