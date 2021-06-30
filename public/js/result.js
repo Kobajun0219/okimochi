@@ -284,7 +284,7 @@ function addEvent(id,data) {
         
         <div class="d-flex justify-content-center align-items-center">
         <a class="btn-stitch2 m-2" onclick="window.location.reload()";>戻る</a>
-        <a href="https://6961cd4e5b314aac9ea4e5cc66f5207e.vfs.cloud9.us-east-2.amazonaws.com/save/${data['id']}" class="btn-stitch m-2">SAVE </a>
+        <a href="https://oki-mochi.herokuapp.com/save/${data['id']}" class="btn-stitch m-2">お気に入りに追加</a>
         </div>
 
         `;

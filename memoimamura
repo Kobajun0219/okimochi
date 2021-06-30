@@ -475,3 +475,363 @@ let mypastels = @json($mypastels);
 
 
 @endsection
+
+
+
+
+
+
+
+
+
+  @if (count($pastels) > 0)
+  <div class="panel panel-default">
+    <div class="panel-heading">
+
+    </div>
+  </div>
+  <div class="panel-body">
+    <table class="table table-striped task-table">
+      <!-- テーブルヘッダ -->
+      <div>投稿一覧</div>
+      <thead>
+        <th>写真</th>
+        <th>ユーザー名</th>
+        <th>タイトル</th>
+        <th>手紙の公開日時</th>
+        <th>公開設定</th>
+        <th>削除</th>
+      </thead>
+      <!-- テーブル本体 -->
+      <tbody>
+        {{-- @foreachで回して$pastels から＄pastelに値をそれぞれ入れる--}}
+        
+        @foreach ($pastels as $pastel)
+       
+        <tr>
+          <!-- 本タイトル -->
+          <td>
+            <img src="{{ asset('/uploads/'.$pastel->pic_name) }}" alt="" style="width: 100px; height: 100px;">
+          </td>
+          <td class="table-text">
+            <!-- $sbdの内容を表示 -->
+            <div>{{ $pastel->u_name }}</div>
+          </td>
+          <td>
+            <div>{{ $pastel->title }}</div>
+          </td>
+          <td>
+            <div>{{ $pastel->open_time}}</div>
+          </td>
+          <td>
+            <form action="{{ url('user/'.$pastel->id) }}" method="POST">
+            {{ csrf_field() }}
+            
+               <div>公開設定
+               @if($pastel->public == 0)
+                 <input type="radio" name="public" value="0" checked> はい
+                 <input type="radio" name="public" value=1 > いいえ
+                 @endif
+                 
+                 @if($pastel->public == 1)
+                 <input type="radio" name="public" value="0" > はい
+                 <input type="radio" name="public" value=1 checked> いいえ
+                 @endif
+                 <input type="hidden" value="{{$pastel->id}}">
+                 <button type="submit" class="btn  btn-danger">変更</button>
+              </div>
+            </form>
+          </td>
+          <td>
+            <form action="{{ url('user/'.$pastel->id) }}" method="POST">
+            {{ csrf_field() }}
+            {{ method_field('DELETE') }}
+            <button type="submit" class="btn  btn-danger">
+              削除
+            </button>
+            </form>
+          </td>
+        </tr>
+        @endforeach
+      </tbody>
+    </table>
+  </div>
+</div>
+@endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.panel-body{
+    max-width: 1060px;
+    font-size:100%;
+    text-align: center;
+    line-height: 1.7;
+    font-family: 'Noto Sans JP','Roboto', sans-serif;
+    max-width: 1060px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+a{
+    text-decoration: none;
+}
+
+a:hover{
+    text-decoration: none;
+}
+
+img{
+    max-width: 100%;
+}
+
+iframe {
+    max-width: 100%;
+}
+
+li{
+    list-style:none
+}
+
+/*CSSの個別部分*/
+
+div#map-canvas {
+    /* text-align: center; */
+    margin: 0 auto;
+}
+
+.form-content {
+    padding: 10px 0 5px 0px;
+    min-width:400px;
+}
+
+label {
+    margin: 15px 0 5px 0;
+}
+
+input#who {
+    width: 100%;
+}
+
+input#title {
+    width: 100%;
+}
+
+textarea#message {
+    width: 30%;
+}
+
+.drag-drop-inside {
+    border: dashed 2px;
+    width: 80%;
+    margin: 0 auto;
+    /* text-align: center; */
+}
+
+input#fileInput {
+    width: 80%;
+}
+
+input#open_time {
+    width: 100%;
+}
+
+input#address {
+    width: 80%;
+}
+
+.form-content.public-form {
+    padding: 40px 0 0px 0;
+}
+
+textarea#tags {
+    width: 100%;
+}
+
+div#sub-button {
+    padding: 15px 0 15px 0;
+}
+
+//下記ドラックアンドドラップのｃｓｓを当ててます。-------
+
+  #dragDropArea{
+  background-color: #f4f4f4;
+  margin: 10px;
+  padding: 10px;
+  border: #ddd dashed 5px;
+  min-height: 200px;
+  text-align: center;
+
+}
+#dragDropArea p{
+    color: #999;
+    font-weight: bold;
+  
+}
+#dragDropArea .drag-drop-buttons{
+   
+}
+.drag-drop-buttons input{
+  
+}
+
+
+
+
+.letterdiv{
+display:flex;
+}
+
+input[type="text"] {
+  width: 100%;
+  border: 2px solid #aaa;
+  border-radius: 4px;
+  margin: 8px 0;
+  outline: none;
+  padding: 8px;
+  box-sizing: border-box;
+  transition: 0.3s;
+}
+
+input[type="text"]:focus {
+  border-color: dodgerBlue;
+  box-shadow: 0 0 8px 0 dodgerBlue;
+}
+
+.inputWithIcon input[type="text"] {
+  padding-left: 40px;
+}
+
+.inputWithIcon {
+  position: relative;
+}
+
+.inputWithIcon i {
+  position: absolute;
+  left: 0;
+  top: 8px;
+  padding: 9px 8px;
+  color: #aaa;
+  transition: 0.3s;
+}
+
+.inputWithIcon input[type="text"]:focus + i {
+  color: dodgerBlue;
+}
+
+.inputWithIcon.inputIconBg i {
+  background-color: #aaa;
+  color: #fff;
+  padding: 9px 4px;
+  border-radius: 4px 0 0 4px;
+}
+
+.inputWithIcon.inputIconBg input[type="text"]:focus + i {
+  color: #fff;
+  background-color: dodgerBlue;
+}
+
+.font-weight {
+font-weight: bold;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+タグページのコピー
+
+
+
+@include('common.errors')
+<!-- バリデーションエラーの表示に使用-->
+
+
+
+
+<!-- Bootstrap の定形コード… -->
+
+
+
+  <!-- 現在の投稿 -->
+  <!-- web.phpの/selectで飛んできたpastelsが入る -->
+  <div class="title"><div class="tag_title">#{{$tags->tag_name}}</div></div>
+  
+
+  
+
+
+      <!-- テーブル本体 -->
+  
+        {{-- @foreachで回して$pastels から＄pastelに値をそれぞれ入れる--}}
+            @foreach ($tags->pastels as $pastel)
+            <!--//公開設定しているものだけを表示しています-->
+              @if($pastel->public == 0)
+              
+             <div class="note_wrap col-4">
+   <div class="example-1 card">
+    <div class="wrapper"style="background-image: url({{'/uploads/'.$pastel->pic_name}});">
+      <div class="date">
+        <span>{{$pastel->u_name}}</span>
+      </div>
+      <div class="data">
+        <div class="content">
+          <span class="author">宛先　{{$pastel->who}}</span>
+          <p class="card_maintitle">タイトル　{{$pastel->title}}</p>
+     
+          <label for="show-menu" class="menu-button"><span></span></label>
+        </div>
+        <input type="checkbox" id="show-menu" />
+        <ul class="menu-content">
+ <li>
+            <a href="#" class="fa fa-bookmark-o"></a>
+          </li>
+              
+          <li class="fa fa-heart-o">場所　{{$pastel->open_place_name}}</li>
+           @foreach ($pastel->tags as $tag)
+          
+          <li class="fa fa-comment-o">タグ　#{{$tag->tag_name}}</li>
+          @endforeach
+        </ul>
+      </div>
+    </div>
+  </div>
+             
+              <!--タグを出しています-->
+                  @foreach ($pastel->tags as $tag)
+                  <div>#{{$tag->tag_name}}</div>
+                   @endforeach
+
+              @endif
+            @endforeach
+
+    
+   
+  </div>
+
+
+
+
+@endsection
+
+ 

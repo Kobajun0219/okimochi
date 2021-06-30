@@ -14,18 +14,37 @@
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="icon" type="image/png" href="{{ asset('/image/fav.png') }}">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    
+    
+          <!--google font-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
 </head>
-<body style="background-color: rgb(201, 190, 176);">
+
+<style>
+
+    .footer{
+
+        height:50px; 
+        padding:10px 0; 
+        text-align: center;
+    }
+</style>
+ <!--全体のfontと背景を変えています-->
+<body style="background-color: rgb(201, 190, 176); font-family: 'Noto Sans JP', sans-serif; width: 100%;" >
     <div id="app">
         
         <!--header-->
-        <nav class="navbar navbar-expand-md navbar-light shadow-sm" style="background-color: #888888; height:60px;">
+                                                                            <!--hedderの色を指定-->
+        <nav class="navbar navbar-expand-md navbar-light shadow-sm" style="background-color: rgb(204 204 204);">
             <div class="container">
                 <!--左の表示-->
                 <a class="navbar-brand" href="{{ url('/') }}">
-                    <img src="{{ asset('/image/logo.png') }}" alt="" style="height:70px; width:auto; margin-left:-40px;">
+                    <img src="{{ asset('/image/logo.png') }}" alt="" style="height:70px; width:auto;">
                     <!--{{ config('app.name', 'Laravel') }}-->
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -92,7 +111,9 @@
 
     
 <footer>
-    <div style=" height:50px; text-align: right; margin:0 20px　border-top：3px solid black; text-align: center;">Copyright © Manavel All Rights Reserved</div>
+    <div class="footer">Copyright © Manavel All Rights Reserved</div>
 </footer>
 </body>
 </html>
+
+<!--bottom: 0; -->

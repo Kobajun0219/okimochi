@@ -98,7 +98,12 @@
  margin-top:15p;
  border: 1px solid;
  width:25%;
+ 
 }
+
+<!--.toukouzone button{-->
+<!-- padding-top:15px;-->
+<!--}-->
 
 .syutokuzone{
  border: 1px solid;
@@ -123,7 +128,46 @@
     border: 1px solid
 }
 
+    .footer{
+
+        height:50px; 
+        padding:10px 0; 
+        text-align: center;
+    }
+    
+    .row{
+    	justify-content: center;
+	    align-items: center;
+	    padding-top: 15px;
+      }
+
+img {
+    max-width: 100%;
+    object-fit: contain;
+}
+
   /*今村Css書いている部分終わり----*/
+  
+  
+  @media screen and ( max-width:479px )
+{
+	.post-flexbox{
+		padding:  10px;
+    display: flex; 
+    flex-direction: column;
+    text-align:center;
+    
+	}
+	
+	.box-eachpost {
+    padding: 10px;
+    margin-top:  10px;
+    margin-left:20px;
+    margin-right:20px;
+    width: 90%;
+    border: 1px solid
+    }
+}
       
       
 </style>
@@ -144,15 +188,15 @@
   <!--ランダムでタグが表示される-->
   <div class="tagzone">
   @foreach ($tags as $tag)
-    <div><a style="text-decoration:none;" href={{ url('/tag/'.$tag->id) }} >#{{ $tag->tag_name}}</a></div>
+    <div><a style="text-decoration:none;" href={{ url('/tag/'.$tag->id) }} class="m-2">#{{ $tag->tag_name}}</a></div>
   @endforeach
   </div>
   
   <div class="tszone">
   <div class="tokouzone">
   <div id ="fa"></div>
-  <div>投稿する</div>
-  <button><a href="{{ url('/edit') }}" style="text-decoration:none;">+</a></button>
+  <!--<div>投稿する</div>-->
+  <button style="padding:10px; margin:15px;"><a href="{{ url('/edit') }}" style="text-decoration:none;">置きもちを書く</a></button>
   </div>
   <div class="syutokuzone">
   <div>取得状態（手紙を取得していればアイコン表示されます。）</div>
@@ -177,11 +221,12 @@
 
     </div>
   </div>
-  <div class="panel-body" style="width:800px; margin: 0 auto;">
-    <table class="table table-striped task-table">
+  <div class="panel-body" style="max-width:800px; margin: 0 auto;">
+    <!--<table class="table table-striped task-table">-->
       <!-- 投稿ヘッダ -->
-      <div>投稿一覧</div>
-      <!-- テーブル本体 -->
+      <br><br>
+      <div style="font-size:28px;text-align: center;">投稿一覧<img src="https://img.icons8.com/small/32/000000/message-squared.png"/></div>
+     
       <div class="post-flexbox">
         {{-- @foreachで回して$pastels から＄pastelに値をそれぞれ入れる--}}
         @foreach ($pastels as $pastel)
@@ -190,9 +235,9 @@
               <img src="{{ asset('/uploads/'.$pastel->pic_name) }}" alt="" style="max-width :200px; height: 100px;">
             <!--<div class="table-text">-->
               <!-- $pastelの内容を表示 -->
-              <div>書き手:{{ $pastel->u_name }}</div>
-              <div>タイトル:{{ $pastel->title }}</div>
-              <div>開封日時:{{ $pastel->open_time}}</div>
+              <div style="font-weight:bold;">書き手:{{ $pastel->u_name }}</div>
+              <div style="font-weight:bold;">タイトル:{{ $pastel->title }}</div>
+              <!--<div>開封日時:{{ $pastel->open_time}}</div>-->
                 <a onclick="eventPanto({{ $pastel }})" class="place" style="text-decoration:none;">
               場所:{{ $pastel->open_place_name }}
               </a>
@@ -209,9 +254,7 @@
 @endif
 <!--ページネーション部分-->
 <div class="row">
-<div class="col-md-4 offset-md-4">
 {{ $pastels->links('vendor.pagination.default')}}
-</div>
 </div>
 <!--ここまで-->
 

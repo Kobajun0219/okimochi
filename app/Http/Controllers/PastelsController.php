@@ -21,6 +21,11 @@ use Auth;
 
 class PastelsController extends Controller
 {
+ //LPページに飛ぶ   
+    public function lp() {
+        return view('lp'); 
+        
+    }
     
     
 //一覧表示
@@ -93,13 +98,13 @@ class PastelsController extends Controller
             $file->move($target_path, $fileName);
         } else {
             //画像が登録されなかった時はから文字をいれる
-            $fileName = "";
+            $fileName = "logo2.png";
         }
 
 
     //tag付けに関して
         // #(ハッシュタグ)で始まる単語を取得。結果は、$matchに多次元配列で代入される。
-        preg_match_all('/#([a-zA-z0-9０-９ぁ-んァ-ヶ亜-熙]+)/u', $request->tags, $match);
+        preg_match_all('/#([a-zA-Z0-9０-９ぁ-んァ-ヶー一-龠 - 々 ー \']+)/u', $request->tags, $match);
         // $match[0]に#(ハッシュタグ)あり、$match[1]に#(ハッシュタグ)なしの結果が入ってくるので、$match[1]で#(ハッシュタグ)なしの結果のみを使います。
         $tags = [];
         foreach ($match[1] as $tag) {

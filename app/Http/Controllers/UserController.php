@@ -28,10 +28,10 @@ class UserController extends Controller
     public function index() {
         
         //自分の保存した投稿のIDを取得。//Paste::where(投稿ID)
-         $saves = Pastel_user::where('user_id', Auth::user()->id)->get();
+         $saves = Pastel_user::where('user_id', Auth::user()->id)->paginate(5);
 
          //自分の投稿一覧を取得
-         $pastels = Pastel::where('u_id',Auth::user()->id)->orderBy('created_at', 'desc')->get();
+         $pastels = Pastel::where('u_id',Auth::user()->id)->orderBy('created_at', 'desc')->paginate(5);
         
          return view('/user', compact('pastels','saves'));
     }

@@ -1,0 +1,18 @@
+cleardb
+
+DB_CONNECTION=mysql
+DB_PORT=3306
+DB_HOST=us-cdbr-east-04.cleardb.com
+DB_DATABASE=heroku_85f55cbaac5acab
+DB_USERNAME=b835488545ffcd
+DB_PASSWORD=2292005a
+
+
+cloud9 mysql
+
+DB_CONNECTION=mysql
+DB_PORT=3306
+DB_HOST=localhost
+DB_DATABASE=c9
+DB_USERNAME=root
+DB_PASSWORD=root

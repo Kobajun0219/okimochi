@@ -7,7 +7,10 @@
     margin:20px;
 }
 
-.log img{
+.img_size{
+    width:100%;
+    max-width: 100%;
+    height: auto;
 }
 
 
@@ -19,8 +22,8 @@
     
     
     
-    
-    <div class="logo"><img src="{{ asset('/image/logo.png') }}" alt=""></div>
+    <!--ロゴ-->
+    <div class="logo"><img src="{{ asset('/image/logo.png') }}" alt="" class="img_size"></div>
     
     <div class="row justify-content-center">
         <div class="col-md-8">

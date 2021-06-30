@@ -50,6 +50,25 @@
   border: dotted 1px #FFF;
 }
 
+  @media screen and ( max-width:479px )
+{
+
+  .note_wrap {
+      width: 90%;
+    }
+  
+  img {
+    object-fit: contain;
+    height: auto;
+  }
+  
+  .note p {
+    margin-top: 2rem;
+    margin-bottom: 2em;
+  }
+
+}
+
 
   </style>
 <!--<div class="panel-body">-->
@@ -67,7 +86,7 @@
       <h5 align="right">{{ $pastels->u_name }}より</h5>
     </div>
      <div style="text-align: center; margin-top: 50px;">
-    <img src="{{ asset('/uploads/'.$pastels->pic_name) }}" alt="" style="width: 200px; height: 200px;">
+    <img src="{{ asset('/uploads/'.$pastels->pic_name) }}" alt="" style="width: 200px;">
     </div>
   </div>
   

@@ -43,7 +43,7 @@ Route::group(['middleware' => 'auth'], function () {
 });
 
 
-
+Route::get('/lp', 'PastelsController@lp');
 
 Route::get('/home', 'HomeController@index')->name('home');
 
