@@ -194,12 +194,12 @@ function placeMermaids() {
        //自分の手紙かどうかの条件分岐
         if(toukou[i].u_id == keynum) {
         var img = {                                 // 画像の設定
-            url: "https://6961cd4e5b314aac9ea4e5cc66f5207e.vfs.cloud9.us-east-2.amazonaws.com/image/1.jpeg",        
+            url: "https://oki-mochi.herokuapp.com/image/1.jpeg",        
             scaledSize: new google.maps.Size(60, 60)    // 画像を縮小表示
         };
         } else {
             var img = {                                 // 画像の設定
-            url: "https://6961cd4e5b314aac9ea4e5cc66f5207e.vfs.cloud9.us-east-2.amazonaws.com/image/0.png",        
+            url: "https://oki-mochi.herokuapp.com/image/0.png",        
             scaledSize: new google.maps.Size(60, 60)    // 画像を縮小表示
         };
 }
@@ -255,7 +255,7 @@ function calcDistance(open_place_latitude, open_place_longitude) {
             imgDiv.width = 60;
             imgDiv.height = 60;
             imgDiv.setAttribute("id",count);
-            imgDiv.src = "https://6961cd4e5b314aac9ea4e5cc66f5207e.vfs.cloud9.us-east-2.amazonaws.com/image/0.png";
+            imgDiv.src = "https://oki-mochi.herokuapp.com/image/0.png";
             document.getElementById('target').append(imgDiv);
             captured[i] = true;                                 // 取得済にする
         addEvent(count,toukou[i]);
