@@ -273,7 +273,7 @@ let mypastels = @json($mypastels);
 </script>
 
 <script src="{{ asset('/js/result.js') }}"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAj-SiIlxd4UX4R5esdvy9D_hPwuzsMxuc&callback=initMap&libraries=geometry">
+<script src="https://maps.googleapis.com/maps/api/js?key=********************************************&libraries=geometry">
     </script>
 
 
