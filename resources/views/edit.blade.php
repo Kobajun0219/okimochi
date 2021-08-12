@@ -213,6 +213,6 @@ font-weight: bold;
     <!--ここまで-->
 </div>
     <script src="{{ asset('/js/edit.js') }}"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?language=ja&region=JP&key=AIzaSyAj-SiIlxd4UX4R5esdvy9D_hPwuzsMxuc">
+    <script src="https://maps.googleapis.com/maps/api/js?language=ja&region=JP&key=">
     </script>
 @endsection
